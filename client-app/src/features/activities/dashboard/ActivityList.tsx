@@ -1,23 +1,14 @@
+import { observer } from 'mobx-react-lite';
 import React, { SyntheticEvent } from 'react';
 import { useState } from 'react';
 import { Segment, Item, Button, Label } from 'semantic-ui-react';
 
-import { Activity } from '../../../app/models/activity';
+import { useStore } from '../../../app/stores/store';
 
-interface Props {
-  activities: Activity[];
-  submitting: boolean;
-  selectActivity: (id: string) => void;
-  deleteActivity: (id: string) => void;
-}
-
-const ActivityList = ({
-  activities,
-  submitting,
-  selectActivity,
-  deleteActivity,
-}: Props) => {
+const ActivityList = () => {
   const [target, setTarget] = useState('');
+  const { activityStore } = useStore();
+  const { activitiesByDate, loading, deleteActivity } = activityStore;
 
   const handleActivityDelete = (
     evt: SyntheticEvent<HTMLButtonElement>,
@@ -26,10 +17,11 @@ const ActivityList = ({
     setTarget(evt.currentTarget.name);
     deleteActivity(id);
   };
+
   return (
     <Segment>
       <Item.Group divided>
-        {activities.map((activity) => (
+        {activitiesByDate.map((activity) => (
           <Item key={activity.id}>
             <Item.Content>
               <Item.Header as="a">{activity.title}</Item.Header>
@@ -45,14 +37,14 @@ const ActivityList = ({
                   floated="right"
                   content="View"
                   color="blue"
-                  onClick={() => selectActivity(activity.id)}
+                  onClick={() => activityStore.selectActivity(activity.id)}
                 />
                 <Button
                   name={activity.id}
                   floated="right"
                   content="Delete"
                   color="red"
-                  loading={submitting && target === activity.id}
+                  loading={loading && target === activity.id}
                   onClick={(e) => handleActivityDelete(e, activity.id)}
                 />
                 <Label basic content={activity.category} />
@@ -65,4 +57,4 @@ const ActivityList = ({
   );
 };
 
-export default ActivityList;
+export default observer(ActivityList);
