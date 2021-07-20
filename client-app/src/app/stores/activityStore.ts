@@ -50,8 +50,6 @@ export default class ActivityStore {
   };
 
   loadActivity = async (id: string) => {
-    console.log(this.loadingInitial);
-
     let activity = this.getActivity(id);
     if (activity) {
       this.selectedActivity = activity;
@@ -201,5 +199,9 @@ export default class ActivityStore {
         this.loading = false;
       });
     }
+  };
+
+  clearSelectedActivity = () => {
+    this.selectedActivity = undefined;
   };
 }
