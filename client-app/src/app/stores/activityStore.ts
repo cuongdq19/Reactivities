@@ -39,7 +39,7 @@ export default class ActivityStore {
     this.setLoadingInitial(true);
     try {
       const activities = await agent.Activities.list();
-      activities.forEach((activity) => {
+      activities.forEach(activity => {
         this.setActivity(activity);
       });
       this.setLoadingInitial(false);
@@ -75,11 +75,11 @@ export default class ActivityStore {
     const user = store.userStore.user;
     if (user) {
       activity.isGoing = activity.attendees!.some(
-        (a) => a.username === user.username
+        a => a.username === user.username
       );
       activity.isHost = activity.hostUsername === user.username;
       activity.host = activity.attendees?.find(
-        (x) => x.username === activity.hostUsername
+        x => x.username === activity.hostUsername
       );
     }
     activity.date = new Date(activity.date!);
@@ -158,7 +158,7 @@ export default class ActivityStore {
         if (this.selectedActivity?.isGoing) {
           this.selectedActivity.attendees =
             this.selectedActivity.attendees?.filter(
-              (a) => a.username !== user?.username
+              a => a.username !== user?.username
             );
           this.selectedActivity.isGoing = false;
         } else {
@@ -199,6 +199,19 @@ export default class ActivityStore {
         this.loading = false;
       });
     }
+  };
+
+  updateAttendeeFollowing = (username: string) => {
+    this.activityRegistry.forEach(activity => {
+      activity.attendees.forEach(attendee => {
+        if (attendee.username === username) {
+          attendee.following
+            ? attendee.followersCount--
+            : attendee.followersCount++;
+          attendee.following = !attendee.following;
+        }
+      });
+    });
   };
 
   clearSelectedActivity = () => {

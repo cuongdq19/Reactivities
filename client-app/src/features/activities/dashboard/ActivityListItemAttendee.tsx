@@ -11,9 +11,13 @@ interface Props {
 }
 
 const ActivityListItemAttendee = ({ attendees }: Props) => {
+  const styles = {
+    borderColor: 'orange',
+    borderWidth: 3,
+  };
   return (
     <List horizontal>
-      {attendees.map((attendee) => (
+      {attendees.map(attendee => (
         <Popup
           hoverable
           key={attendee.username}
@@ -24,6 +28,8 @@ const ActivityListItemAttendee = ({ attendees }: Props) => {
               to={`/profiles/${attendee.username}`}
             >
               <Image
+                style={attendee.following ? styles : null}
+                bordered
                 size="mini"
                 circular
                 src={attendee.image || '/assets/user.png'}

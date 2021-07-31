@@ -8,21 +8,21 @@ import { User, UserFormValues } from '../models/user';
 import { store } from '../stores/store';
 
 const sleep = (delay: number) => {
-  return new Promise((resolve) => {
+  return new Promise(resolve => {
     setTimeout(resolve, delay);
   });
 };
 
 axios.defaults.baseURL = 'http://localhost:5000/api';
 
-axios.interceptors.request.use((config) => {
+axios.interceptors.request.use(config => {
   const token = store.commonStore.token;
   if (token) config.headers.Authorization = `Bearer ${token}`;
   return config;
 });
 
 axios.interceptors.response.use(
-  async (response) => {
+  async response => {
     try {
       await sleep(1000);
       return response;
@@ -113,6 +113,10 @@ const Profiles = {
   deletePhoto: (id: string) => requests.del(`/photos/${id}`),
   updateProfile: (profile: Partial<Profile>) =>
     requests.put(`/profiles`, profile),
+  updateFollowing: (username: string) =>
+    requests.post(`/follow/${username}`, {}),
+  listFollowings: (username: string, predicate: string) =>
+    requests.get<Profile[]>(`/follow/${username}?predicate=${predicate}`),
 };
 
 const agent = {
