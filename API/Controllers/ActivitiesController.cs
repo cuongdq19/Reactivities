@@ -1,4 +1,5 @@
 using Application.Activities;
+using Application.Core;
 
 using Domain;
 
@@ -14,9 +15,9 @@ namespace API.Controllers
     public class ActivitiesController : BaseApiController
     {
         [HttpGet]
-        public async Task<IActionResult> GetActivities()
+        public async Task<IActionResult> GetActivities([FromQuery] ActivityParams @params)
         {
-            return HandleResult(await Mediator.Send(new List.Query()));
+            return HandlePagedResult(await Mediator.Send(new List.Query() { Params = @params }));
         }
 
         [HttpGet("{id}")]
